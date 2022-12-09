@@ -6,6 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./track-page.component.scss']
 })
 export class TrackPageComponent implements OnInit {
+  mockTrackList = [
+    {
+      name:'BEBE (Oficial)'
+    },
+    {
+      name:'BEBE (Oficial)'
+    },
+    {
+      name:'BEBE (Oficial)'
+    }
+  ];
 
   constructor() { }
 
