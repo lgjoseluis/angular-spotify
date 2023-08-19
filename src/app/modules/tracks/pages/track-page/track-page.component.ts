@@ -18,22 +18,23 @@ export class TrackPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const observerTracksTrending$ = this.trackService.dataTracksTrending$.subscribe(
-      response => {
-        this.tracksTrending = response;
-        this.tracksRandom = response;
-      });
-
-      const observerTracksRandom$ = this.trackService.dataTracksRandom$.subscribe(
+    this.trackService.getAllTracks$()
+      .subscribe(
         response => {
-          this.tracksRandom = [...this.tracksRandom, ...response]; //Contatenando items al array
-        });
+          this.tracksTrending = response;
+        }
+      );
 
-    this.listObservers$ = [observerTracksTrending$, observerTracksRandom$]
+    this.trackService.getTracksRandom$()
+      .subscribe(
+        response => {
+          this.tracksRandom = response;
+        }
+      );
   }
 
   ngOnDestroy(): void {
-    this.listObservers$.forEach( u => u.unsubscribe() );
+    
   }
 
 }
