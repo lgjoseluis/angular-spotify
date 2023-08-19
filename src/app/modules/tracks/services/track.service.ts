@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TrackModel } from '@core/models/tracks.models';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -29,12 +29,20 @@ export class TrackService {
     return this.httpClient
       .get(`${this.URL}/tracks`)
       .pipe(
-        map( ({data}: any) => {
-          return data.reverse();
-        }),
-        map((dataReverse) => {
-          return dataReverse.filter((track:TrackModel) => track._id !== 1);
-        })
+        tap( data => console.log('Source:>', data)),
+        mergeMap( ({data}: any) => this.skipById(data, 1)),
+        tap( data => console.log('Result:>', data))
       );      
+  }
+
+  private skipById(listTracks: TrackModel[], id: number): Promise<TrackModel[]>
+  {
+    return new Promise( 
+      (resolve, reject) =>{
+        const listTemp = listTracks.filter(i => i._id !== id);
+
+        resolve(listTemp);
+      }
+    );
   }
 }
