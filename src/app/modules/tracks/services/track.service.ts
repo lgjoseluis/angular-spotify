@@ -27,7 +27,7 @@ export class TrackService {
 
   public getTracksRandom$():Observable<any> {
     return this.httpClient
-      .get(`${this.URL}/tracks`)
+      .get(`${this.URL}/trackss`)
       .pipe(
         tap( data => console.log('Source:>', data)),
         mergeMap( ({data}: any) => this.skipById(data, 1)),

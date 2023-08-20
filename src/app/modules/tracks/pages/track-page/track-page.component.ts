@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TrackModel } from '@core/models/tracks.models';
 import { TrackService } from '@modules/tracks/services/track.service';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-track-page',
   templateUrl: './track-page.component.html',
@@ -18,23 +18,26 @@ export class TrackPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.trackService.getAllTracks$()
-      .subscribe(
-        response => {
-          this.tracksTrending = response;
-        }
-      );
-
-    this.trackService.getTracksRandom$()
-      .subscribe(
-        response => {
-          this.tracksRandom = response;
-        }
-      );
+    this.loadDataAll();
+    this.loadDataRandom();
   }
 
   ngOnDestroy(): void {
     
   }
 
+  private async loadDataAll(): Promise<any>
+  {
+    this.tracksTrending = await firstValueFrom(this.trackService.getAllTracks$());
+  }
+
+  private loadDataRandom(): void
+  {
+    this.trackService.getTracksRandom$()
+      .subscribe({
+        next: (v) => { this.tracksRandom = v },
+        error: (e) => console.error('Error de conexión'),
+        complete: () => console.info('Complete')
+      });
+  }
 }
