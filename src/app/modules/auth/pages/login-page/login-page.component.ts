@@ -33,16 +33,18 @@ export class LoginPageComponent implements OnInit {
   sendLogin(): void {
     const { email, password } = this.formLogin.value; //-> Destructuración
         
-    this._authService.sendCredentials(email, password);  
-      /*.subscribe(responseOk => { //TODO: Cuando el usuario credenciales Correctas ✔✔
-        console.log('Session iniciada correcta', responseOk);
-        const { tokenSession, data } = responseOk
-        this.cookie.set('token', tokenSession, 4, '/') 
-        this.router.navigate(['/', 'tracks'])
-      },
-        err => {//TODO error 400>=
-          this.errorSession = true
-          console.log('Ocurrio error con tu email o password');
-        })*/
+    this._authService.sendCredentials(email, password)
+      .subscribe({
+        next: (response) => {
+          console.log('Session iniciada', response);
+          const { tokenSession, data } = response
+          //this.cookie.set('token', tokenSession, 4, '/') 
+          //this.router.navigate(['/', 'tracks'])
+        },
+        error: (error) => {
+          this.errorSession = true;
+          console.log('Login-error:> ', error.error);
+        }
+      });
   }
 }
