@@ -35,8 +35,7 @@ export class TrackPageComponent implements OnInit, OnDestroy {
   {
     this.trackService.getTracksRandom$()
       .subscribe({
-        next: (v) => { this.tracksRandom = v },
-        error: (e) => console.error('Error de conexión'),
+        next: (v) => { this.tracksRandom = v },        
         complete: () => console.info('Complete')
       });
   }
