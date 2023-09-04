@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -12,8 +13,9 @@ export class LoginPageComponent implements OnInit {
   errorSession: boolean = false;
   formLogin: FormGroup = new FormGroup({});
   
-  constructor(private _authService: AuthService,
-    private cookie: CookieService) { }
+  constructor(private _authService: AuthService
+    , private cookie: CookieService
+    , private router:Router) { }
 
   ngOnInit(): void {
     this.formLogin = new FormGroup(
@@ -42,7 +44,7 @@ export class LoginPageComponent implements OnInit {
 
           this.cookie.set('token', tokenSession, 4, '/');
           
-          //this.router.navigate(['/', 'tracks'])
+          this.router.navigate(['/', 'tracks'])
         },
         error: (error) => {
           this.errorSession = true;
