@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TrackModel } from '@core/models/tracks.models';
 import { SearchService } from '@modules/history/services/search.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-history-page',
@@ -8,7 +9,7 @@ import { SearchService } from '@modules/history/services/search.service';
   styleUrls: ['./history-page.component.scss']
 })
 export class HistoryPageComponent implements OnInit {
-  listResults: TrackModel[] =[];
+  listResults$: Observable<any> = of();
 
   constructor(private searchService: SearchService) { }
 
@@ -17,11 +18,6 @@ export class HistoryPageComponent implements OnInit {
 
   public receiveData(event:string):void
   {
-    this.searchService.serarchTracks$(event)
-    .subscribe(
-      ({data}) =>{
-        this.listResults = data;
-      }
-    );
+    this.listResults$ = this.searchService.serarchTracks$(event);
   }
 }
