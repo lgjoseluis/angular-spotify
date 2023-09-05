@@ -9,10 +9,13 @@ export class MultimediaService {
   public callback:EventEmitter<any> = new EventEmitter<any>();
 
   public trackInfo$: BehaviorSubject<any> = new BehaviorSubject(undefined);
-  public timeElapsed$: BehaviorSubject<string> = new BehaviorSubject('00:00')
-  public timeRemaining$: BehaviorSubject<string> = new BehaviorSubject('-00:00')
-  public audio!: HTMLAudioElement;
+
+  public timeElapsed$: BehaviorSubject<string> = new BehaviorSubject('00:00');
+  public timeRemaining$: BehaviorSubject<string> = new BehaviorSubject('-00:00');
+
+  public playerStatus$: BehaviorSubject<string> = new BehaviorSubject('paused');  
   
+  public audio!: HTMLAudioElement;  
 
   constructor() 
   { 
@@ -31,6 +34,10 @@ export class MultimediaService {
   private listenAllEvents(): void
   {
     this.audio.addEventListener('timeupdate', this.calculateTime, false);
+    this.audio.addEventListener('playing', this.setPlayerStatus, false);
+    this.audio.addEventListener('play', this.setPlayerStatus, false);
+    this.audio.addEventListener('pause', this.setPlayerStatus, false);
+    this.audio.addEventListener('ended', this.setPlayerStatus, false);
   }
 
   private calculateTime = () =>
@@ -63,6 +70,30 @@ export class MultimediaService {
     const displayFormat = `-${displayMinutes}:${displaySeconds}`
     this.timeRemaining$.next(displayFormat)
   }
+
+  private setPlayerStatus = (state: any) => 
+  {
+    switch (state.type) 
+    {
+      case 'play':
+        this.playerStatus$.next('play')
+        break;
+      case 'playing':
+        this.playerStatus$.next('playing')
+        break;
+      case 'ended':
+        this.playerStatus$.next('ended')
+        break;
+      default:
+        this.playerStatus$.next('paused')
+        break;
+    }
+  }
+
+  public togglePlayer(): void 
+  {
+    (this.audio.paused) ? this.audio.play() : this.audio.pause();
+  }  
 
   public setAudio(track:TrackModel):void
   {
